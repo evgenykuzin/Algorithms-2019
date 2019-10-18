@@ -74,8 +74,12 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      */
     @Override
     public boolean remove(Object o) {
-        // TODO
-        throw new NotImplementedError();
+        if (contains(o)) {
+            T t = (T) o;
+            Node<T> n = find(t);
+            n = null;
+            return true;
+        } else return false;
     }
 
     @Override
