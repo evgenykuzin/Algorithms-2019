@@ -40,19 +40,20 @@ public class JavaAlgorithms {
      */
     //НЕ РАБОТАЕТ
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
-        int[] costs = TaskUtils.readIntegers(inputName, 100);
-        int maxDiff = costs[1] - costs[0];
-        Pair<Integer, Integer> pair = new Pair<>(costs[1], costs[0]);
-        for (int i = 0; i < costs.length - 1; i++) {
-            int first = costs[i];
-            int second = costs[i + 1];
-            if (second - first > maxDiff) {
-                maxDiff = second - first;
-                System.out.println(second + " " + first);
-                pair = new Pair<>(i + 1, i + 2);
-            }
-        }
-        return pair;
+        throw new NotImplementedError();
+        //        int[] costs = TaskUtils.readIntegers(inputName, 100);
+//        int maxDiff = costs[1] - costs[0];
+//        Pair<Integer, Integer> pair = new Pair<>(costs[1], costs[0]);
+//        for (int i = 0; i < costs.length - 1; i++) {
+//            int first = costs[i];
+//            int second = costs[i + 1];
+//            if (second - first > maxDiff) {
+//                maxDiff = second - first;
+//                System.out.println(second + " " + first);
+//                pair = new Pair<>(i + 1, i + 2);
+//            }
+//        }
+//        return pair;
     }
 
     /**
@@ -186,40 +187,41 @@ public class JavaAlgorithms {
      */
     //НЕ РАБОТАЕТ
     static public Set<String> baldaSearcher(String inputName, Set<String> words) {
-        String[][] matrix = new String[1000][1000];
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(inputName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String string;
-        int size = 0;
-        try {
-            int indx = 0;
-            do {
-                string = bufferedReader.readLine();
-                if (string != null) {
-                    String[] raw = string.split(" ");
-                    for (int i = 0; i < raw.length; i++) {
-                        matrix[indx][i] = raw[i];
-                        size++;
-                    }
-                }
-                indx++;
-            } while (string != null);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Set<String> result = new HashSet<>();
-        for (String word : words) {
-            StringBuilder reached = new StringBuilder();
-            if (containsWord(reached, matrix, word.split(""), 0, 0, 0)){
-                result.add(word);
-            }
-        }
-        return result;
+        throw new NotImplementedError();
+//        String[][] matrix = new String[1000][1000];
+//        FileReader fileReader = null;
+//        try {
+//            fileReader = new FileReader(inputName);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        BufferedReader bufferedReader = new BufferedReader(fileReader);
+//        String string;
+//        int size = 0;
+//        try {
+//            int indx = 0;
+//            do {
+//                string = bufferedReader.readLine();
+//                if (string != null) {
+//                    String[] raw = string.split(" ");
+//                    for (int i = 0; i < raw.length; i++) {
+//                        matrix[indx][i] = raw[i];
+//                        size++;
+//                    }
+//                }
+//                indx++;
+//            } while (string != null);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        Set<String> result = new HashSet<>();
+//        for (String word : words) {
+//            StringBuilder reached = new StringBuilder();
+//            if (containsWord(reached, matrix, word.split(""), 0, 0, 0)){
+//                result.add(word);
+//            }
+//        }
+//        return result;
     }
 
     private static boolean containsWord(StringBuilder reached, String[][] matrix, String[] word, int indx, int jndx, int kndx) {

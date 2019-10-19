@@ -1,8 +1,6 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
-import kotlin.Pair;
-
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -153,68 +151,69 @@ public class JavaTasks {
      */
     //НЕ РАБОТАЕТ
     static public void sortAddresses(String inputName, String outputName) {
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(inputName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        String string;
-        String[] array = new String[100000];
-        int size = 0;
-        HashMap<String, String> map = new HashMap<>();
-        try {
-            int indx = 0;
-            do {
-                string = bufferedReader.readLine();
-                if (string != null) {
-                    String[] addressArray = string.split(" ");
-                    int value = 0;
-                    String street = addressArray[3] + " " + addressArray[4];
-//                    for (int n : street.chars().toArray()) {
-//                        value*=100;
-//                        value += n;
+        throw new NotImplementedError();
+//        FileReader fileReader = null;
+//        try {
+//            fileReader = new FileReader(inputName);
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        }
+//        BufferedReader bufferedReader = new BufferedReader(fileReader);
+//        String string;
+//        String[] array = new String[100000];
+//        int size = 0;
+//        HashMap<String, String> map = new HashMap<>();
+//        try {
+//            int indx = 0;
+//            do {
+//                string = bufferedReader.readLine();
+//                if (string != null) {
+//                    String[] addressArray = string.split(" ");
+//                    int value = 0;
+//                    String street = addressArray[3] + " " + addressArray[4];
+////                    for (int n : street.chars().toArray()) {
+////                        value*=100;
+////                        value += n;
+////                    }
+//                    //String number = addressArray[4];
+//                    String name = addressArray[0] + " " + addressArray[1];
+//                    //array[indx] = value + number;
+//                    array[indx] = street;
+//                    if (map.containsKey(array[indx])) {
+//                        String previousNames = map.get(array[indx]);
+//                        StringBuilder names = new StringBuilder(previousNames + ", " + name);
+//                        String[] namesArr = names.toString().split(", ");
+//                        alphabetSort(namesArr);
+//                        names = new StringBuilder(namesArr[0]);
+//                        for (int i = 1; i < namesArr.length; i++) {
+//                            names.append(", ").append(namesArr[i]);
+//                        }
+//                        map.replace(array[indx], names.toString());
+//                        array[indx] = null;
+//                    } else {
+//                        map.put(array[indx], name);
 //                    }
-                    //String number = addressArray[4];
-                    String name = addressArray[0] + " " + addressArray[1];
-                    //array[indx] = value + number;
-                    array[indx] = street;
-                    if (map.containsKey(array[indx])) {
-                        String previousNames = map.get(array[indx]);
-                        StringBuilder names = new StringBuilder(previousNames + ", " + name);
-                        String[] namesArr = names.toString().split(", ");
-                        alphabetSort(namesArr);
-                        names = new StringBuilder(namesArr[0]);
-                        for (int i = 1; i < namesArr.length; i++) {
-                            names.append(", ").append(namesArr[i]);
-                        }
-                        map.replace(array[indx], names.toString());
-                        array[indx] = null;
-                    } else {
-                        map.put(array[indx], name);
-                    }
-                    size++;
-                }
-                indx++;
-            } while (string != null);
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
-        }
-        array = Arrays.copyOf(array, size);
-        quickAlphabetSort(array);
-        try {
-            FileWriter fileWriter = new FileWriter(outputName);
-            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            for (int i = array.length - size; i < array.length; i++) {
-                if (array[i] != null) {
-                    bufferedWriter.write(array[i] + " - " + map.get(array[i]) + "\n");
-                }
-            }
-            bufferedWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//                    size++;
+//                }
+//                indx++;
+//            } while (string != null);
+//        } catch (IOException ioe) {
+//            ioe.printStackTrace();
+//        }
+//        array = Arrays.copyOf(array, size);
+//        quickAlphabetSort(array);
+//        try {
+//            FileWriter fileWriter = new FileWriter(outputName);
+//            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+//            for (int i = array.length - size; i < array.length; i++) {
+//                if (array[i] != null) {
+//                    bufferedWriter.write(array[i] + " - " + map.get(array[i]) + "\n");
+//                }
+//            }
+//            bufferedWriter.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
     }
 
     private static void alphabetSort(String[] arrayWords) {
