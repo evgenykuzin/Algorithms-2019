@@ -39,7 +39,10 @@ public class JavaTasks {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-
+    //Асимтотическая сложность :
+    //quickSort() - O(n*log(n));
+    //чтение + запись = O(2n);
+    //в итоге: O(2n + n*log(n))
     static public void sortTimes(String inputName, String outputName) {
         int[] array = new int[1000];
         int size = 0;
@@ -149,172 +152,9 @@ public class JavaTasks {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    //НЕ РАБОТАЕТ
     static public void sortAddresses(String inputName, String outputName) {
         throw new NotImplementedError();
-//        FileReader fileReader = null;
-//        try {
-//            fileReader = new FileReader(inputName);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        BufferedReader bufferedReader = new BufferedReader(fileReader);
-//        String string;
-//        String[] array = new String[100000];
-//        int size = 0;
-//        HashMap<String, String> map = new HashMap<>();
-//        try {
-//            int indx = 0;
-//            do {
-//                string = bufferedReader.readLine();
-//                if (string != null) {
-//                    String[] addressArray = string.split(" ");
-//                    int value = 0;
-//                    String street = addressArray[3] + " " + addressArray[4];
-////                    for (int n : street.chars().toArray()) {
-////                        value*=100;
-////                        value += n;
-////                    }
-//                    //String number = addressArray[4];
-//                    String name = addressArray[0] + " " + addressArray[1];
-//                    //array[indx] = value + number;
-//                    array[indx] = street;
-//                    if (map.containsKey(array[indx])) {
-//                        String previousNames = map.get(array[indx]);
-//                        StringBuilder names = new StringBuilder(previousNames + ", " + name);
-//                        String[] namesArr = names.toString().split(", ");
-//                        alphabetSort(namesArr);
-//                        names = new StringBuilder(namesArr[0]);
-//                        for (int i = 1; i < namesArr.length; i++) {
-//                            names.append(", ").append(namesArr[i]);
-//                        }
-//                        map.replace(array[indx], names.toString());
-//                        array[indx] = null;
-//                    } else {
-//                        map.put(array[indx], name);
-//                    }
-//                    size++;
-//                }
-//                indx++;
-//            } while (string != null);
-//        } catch (IOException ioe) {
-//            ioe.printStackTrace();
-//        }
-//        array = Arrays.copyOf(array, size);
-//        quickAlphabetSort(array);
-//        try {
-//            FileWriter fileWriter = new FileWriter(outputName);
-//            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-//            for (int i = array.length - size; i < array.length; i++) {
-//                if (array[i] != null) {
-//                    bufferedWriter.write(array[i] + " - " + map.get(array[i]) + "\n");
-//                }
-//            }
-//            bufferedWriter.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
     }
-
-    private static void alphabetSort(String[] arrayWords) {
-        for (int j = 0; j < arrayWords.length; j++) {
-            for (int i = j + 1; i < arrayWords.length; i++) {
-                if (arrayWords[i] != null && arrayWords[j] != null) {
-                    int home1;
-                    int home2;
-                    try {
-                        home1 = Integer.valueOf(arrayWords[i].split(" ")[1]);
-                        home2 = Integer.valueOf(arrayWords[j].split(" ")[1]);
-                    } catch (NumberFormatException nfe) {
-                        home1 = 0;
-                        home2 = 0;
-                    }
-                    boolean firstLessSecond = arrayWords[i].compareTo(arrayWords[j]) < 0;
-                    boolean streetsEquals = arrayWords[i].split(" ")[0].
-                            equals(arrayWords[j].split(" ")[0]);
-                    if (firstLessSecond || streetsEquals && home1 < home2) {
-                        String k = arrayWords[j];
-                        arrayWords[j] = arrayWords[i];
-                        arrayWords[i] = k;
-                    }
-                }
-            }
-        }
-    }
-
-    private static boolean less(String s1, String s2) {
-        int home1;
-        int home2;
-        try {
-            home1 = Integer.valueOf(s1.split(" ")[1]);
-            home2 = Integer.valueOf(s2.split(" ")[1]);
-        } catch (NumberFormatException nfe) {
-            home1 = 0;
-            home2 = 0;
-        }
-        return s1.compareTo(s2) < 0 || s1.split(" ")[0].
-                equals(s2.split(" ")[0]) && home1 < home2;
-    }
-
-    private static boolean more(String s1, String s2) {
-        return !less(s1, s2) && !s1.equals(s2);
-    }
-
-    private static void quickSort(String[] elements, int min, int max) {
-        if (min < max) {
-            int border = partition(elements, min, max);
-            quickSort(elements, min, border);
-            quickSort(elements, border + 1, max);
-        }
-    }
-
-    public static void quickAlphabetSort(String[] elements) {
-        quickSort(elements, 0, elements.length - 1);
-    }
-
-    private static final Random random = new Random(Calendar.getInstance().getTimeInMillis());
-
-    private static int partition(String[] elements, int min, int max) {
-        String x = elements[min + random.nextInt(max - min + 1)];
-        int left = min, right = max;
-        while (left <= right) {
-            if (x != null) {
-                boolean less = false;
-                System.out.println(elements[left]);
-                if (elements[left] != null) {
-                    less = less(elements[left], x);
-                }
-                while (less) {
-                    left++;
-                    if (elements[left] != null) {
-                        less = less(elements[left], x);
-                    }
-                }
-                boolean more = false;
-                System.out.println(elements[right]);
-                if (elements[right] != null) {
-                    more = more(elements[right], x);
-                }
-                while (more) {
-                    if (elements[right] != null) {
-                        right--;
-                        more = more(elements[right], x);
-                    }
-                }
-                if (left <= right) {
-                    if (elements[left] != null && elements[right] != null) {
-                        String temp = elements[left];
-                        elements[left] = elements[right];
-                        elements[right] = temp;
-                    }
-                    left++;
-                    right--;
-                }
-            }
-        }
-        return right;
-    }
-
 
     /**
      * Сортировка температур
@@ -346,6 +186,10 @@ public class JavaTasks {
      * 99.5
      * 121.3
      */
+    //Асимтотическая сложность :
+    //heapSort() - O(n*log(n));
+    //чтение + запись = O(2n);
+    //в итоге: O(2n + n*log(n))
     static public void sortTemperatures(String inputName, String outputName) {
         int[] array = new int[10000000];
         FileReader fileReader = null;
@@ -417,7 +261,14 @@ public class JavaTasks {
      * 2
      * 2
      */
+    //Асимтотическая сложность :
+    //maxCountIndex() = O(maxValue);
+    //чтение + запись = O(2n);
+    //определение частоты числа + перестановка чисел в конец = O(2n);
+    //в итоге: O(2n + 2n + maxValue)
+
     static public void sortSequence(String inputName, String outputName) {
+        int maxValue = 100000000;
         int[] array = new int[10000000];
         int size = 0;
         FileReader fileReader = null;
@@ -442,10 +293,15 @@ public class JavaTasks {
             e.printStackTrace();
         }
         array = Arrays.copyOf(array, size);
-        int[] count = new int[100000000];
+        int[] count = new int[maxValue];
+        maxValue = 0;
         for (int value : array) {
-            count[value]++;
+            if (value<count.length) {
+                if (value > maxValue) maxValue = value;
+                count[value]++;
+            }
         }
+        count = Arrays.copyOf(count, maxValue);
         int maxCountValue = maxCountIndex(count);
         int j = 0;
         boolean trigger = true;

@@ -2,15 +2,12 @@ package lesson2;
 
 import kotlin.NotImplementedError;
 import kotlin.Pair;
-import utils.TaskUtils;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaAlgorithms {
@@ -41,19 +38,6 @@ public class JavaAlgorithms {
     //НЕ РАБОТАЕТ
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
         throw new NotImplementedError();
-        //        int[] costs = TaskUtils.readIntegers(inputName, 100);
-//        int maxDiff = costs[1] - costs[0];
-//        Pair<Integer, Integer> pair = new Pair<>(costs[1], costs[0]);
-//        for (int i = 0; i < costs.length - 1; i++) {
-//            int first = costs[i];
-//            int second = costs[i + 1];
-//            if (second - first > maxDiff) {
-//                maxDiff = second - first;
-//                System.out.println(second + " " + first);
-//                pair = new Pair<>(i + 1, i + 2);
-//            }
-//        }
-//        return pair;
     }
 
     /**
@@ -120,6 +104,7 @@ public class JavaAlgorithms {
      * Если имеется несколько самых длинных общих подстрок одной длины,
      * вернуть ту из них, которая встречается раньше в строке first.
      */
+    //Асимтотическая сложность : O(first.length); || O(n);
     static public String longestCommonSubstring(String first, String second) {
         String result = "";
         int i = 0;
@@ -155,8 +140,23 @@ public class JavaAlgorithms {
      * Справка: простым считается число, которое делится нацело только на 1 и на себя.
      * Единица простым числом не считается.
      */
+    //Асимтотическая сложность : O((n-3)/2 + (n-3-sqrt(n))/2);
     static public int calcPrimesNumber(int limit) {
-        throw new NotImplementedError();
+        int primesCount = 1;
+        if (limit < 2) return 0;
+        for (int n = 3; n <= limit; n += 2) {
+            boolean prime = true;
+            for (int del = 3; del <= Math.sqrt(n); del += 2) {
+                if (n % del == 0) {
+                    prime = false;
+                    break;
+                }
+            }
+            if (prime) {
+                primesCount++;
+            }
+        }
+        return primesCount;
     }
 
     /**
@@ -187,58 +187,127 @@ public class JavaAlgorithms {
      */
     //НЕ РАБОТАЕТ
     static public Set<String> baldaSearcher(String inputName, Set<String> words) {
-        throw new NotImplementedError();
-//        String[][] matrix = new String[1000][1000];
-//        FileReader fileReader = null;
-//        try {
-//            fileReader = new FileReader(inputName);
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//        BufferedReader bufferedReader = new BufferedReader(fileReader);
-//        String string;
-//        int size = 0;
-//        try {
-//            int indx = 0;
-//            do {
-//                string = bufferedReader.readLine();
-//                if (string != null) {
-//                    String[] raw = string.split(" ");
-//                    for (int i = 0; i < raw.length; i++) {
-//                        matrix[indx][i] = raw[i];
-//                        size++;
-//                    }
-//                }
-//                indx++;
-//            } while (string != null);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        Set<String> result = new HashSet<>();
-//        for (String word : words) {
-//            StringBuilder reached = new StringBuilder();
-//            if (containsWord(reached, matrix, word.split(""), 0, 0, 0)){
-//                result.add(word);
-//            }
-//        }
-//        return result;
-    }
-
-    private static boolean containsWord(StringBuilder reached, String[][] matrix, String[] word, int indx, int jndx, int kndx) {
-        for (int i = indx; i < matrix.length; i++) {
-
-            for (int j = jndx; j < matrix.length; j++) {
-                if (matrix[i][j].equals(word[kndx])) {
-                    reached.append(word[kndx]);
-                    if (Arrays.equals(reached.toString().split(""), word)){
-                        return true;
+        String[][] matrix = new String[1000][1000];
+        FileReader fileReader = null;
+        try {
+            fileReader = new FileReader(inputName);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        String string;
+        int size = 0;
+        try {
+            int indx = 0;
+            do {
+                string = bufferedReader.readLine();
+                if (string != null) {
+                    String[] raw = string.split(" ");
+                    for (int i = 0; i < raw.length; i++) {
+                        matrix[indx][i] = raw[i];
+                        size++;
                     }
-                    return containsWord(reached, matrix, word, i, j, kndx+1);
                 }
+                indx++;
+            } while (string != null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Set<String> result = new HashSet<>();
+        for (String word : words) {
+            if (containsWord(matrix, word)) {
+                result.add(word);
             }
         }
-        return false;
+        return result;
     }
 
+    private static boolean containsWord(String[][] matrix, String word) {
+        return containsWord(matrix, word.split(""), 0, 0, 0, 0);
+    }
 
+    private static boolean inPath(int indx, int jndx) {
+        return lockPath.contains(new Pair<>(indx, jndx));
+    }
+
+    private static ArrayList<Pair<Integer, Integer>> lockPath = new ArrayList<>();
+    private static ArrayList<Pair<Integer, Integer>> unlock = new ArrayList<>();
+
+    private static boolean containsWord(String[][] matrix, String[] word, int indx, int jndx, int kndx, int lockDir) {
+        boolean equals = false;
+        if (kndx + 1 < word.length) {
+            if (indx + 1 < matrix.length) {
+                if (matrix[indx + 1][jndx] != null) {
+                    equals = matrix[indx + 1][jndx].equals(word[kndx + 1]);
+                }
+            }
+            if (equals && !inPath(indx + 1, jndx)) {
+                lockPath.add(new Pair<>(indx + 1, jndx));
+                lockPath.removeAll(unlock);
+                return containsWord(matrix, word, indx + 1, jndx, kndx + 1, 1);
+            } else {
+                equals = false;
+                if (indx - 1 >= 0) {
+                    if (matrix[indx - 1][jndx] != null) {
+                        equals = matrix[indx - 1][jndx].equals(word[kndx + 1]);
+                    }
+                }
+                if (equals && !inPath(indx - 1, jndx)) {
+                    lockPath.add(new Pair<>(indx - 1, jndx));
+                    lockPath.removeAll(unlock);
+                    return containsWord(matrix, word, indx - 1, jndx, kndx + 1, -1);
+                } else {
+                    equals = false;
+                    if (jndx + 1 < matrix.length) {
+                        if (matrix[indx][jndx + 1] != null) {
+                            equals = matrix[indx][jndx + 1].equals(word[kndx + 1]);
+                        }
+                    }
+                    if (equals && !inPath(indx, jndx + 1)) {
+                        lockPath.add(new Pair<>(indx, jndx + 1));
+                        lockPath.removeAll(unlock);
+                        return containsWord(matrix, word, indx, jndx + 1, kndx + 1, 2);
+                    } else {
+                        equals = false;
+                        if (jndx - 1 >= 0) {
+                            if (matrix[indx][jndx - 1] != null) {
+                                equals = matrix[indx][jndx - 1].equals(word[kndx + 1]);
+                            }
+                        }
+                        if (equals && !inPath(indx, jndx - 1)) {
+                            lockPath.add(new Pair<>(indx, jndx - 1));
+                            lockPath.removeAll(unlock);
+                            return containsWord(matrix, word, indx, jndx - 1, kndx + 1, -2);
+                        } else {
+                            if (kndx - 1 >= 0) kndx--;
+                            if (lockPath.isEmpty() || kndx == 0) {
+
+                                if (jndx + 1 < matrix.length) {
+                                    jndx++;
+                                } else if (indx + 1 < matrix.length) {
+                                    lockPath = new ArrayList<>();
+                                    indx++;
+                                    jndx = 0;
+                                }
+                            } else {
+                                //unlock.add(new Pair<>(indx, jndx));
+                                indx = lockPath.get(kndx).getFirst();
+                                jndx = lockPath.get(kndx).getSecond();
+                            }
+                            if (indx > matrix.length && jndx > matrix.length || matrix[indx][jndx] == null) {
+                                lockPath = new ArrayList<>();
+                                return false;
+                            }
+                            return containsWord(matrix, word, indx, jndx, kndx, 0);
+                        }
+                    }
+                }
+            }
+        } else {
+            lockPath = new ArrayList<>();
+            return true;
+        }
+        //System.out.println("return false2");
+        //return false;
+    }
 }
