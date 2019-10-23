@@ -1,7 +1,6 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.*;
 import java.text.ParseException;
@@ -14,16 +13,16 @@ public class JavaTasks {
 
     private static boolean less(Comparable o1, Comparable o2){
         if (o1 == null && o2 == null) return false;
-        if (o1 == null && o2 != null) return true;
-        if (o1 != null && o2 == null) return false;
-        return  (o1.compareTo(o2) == -1);
+        if (o1 == null) return true;
+        if (o2 == null) return false;
+        return  (o1.compareTo(o2) < 0);
     }
 
     private static boolean more(Comparable o1, Comparable o2){
         if (o1 == null && o2 == null) return false;
-        if (o1 == null && o2 != null) return false;
-        if (o1 != null && o2 == null) return true;
-        return  (o1.compareTo(o2) == 1);
+        if (o1 == null) return false;
+        if (o2 == null) return true;
+        return  (o1.compareTo(o2) > 0);
     }
 
     private static int partition(Comparable[] elements, int min, int max) {
@@ -42,7 +41,6 @@ public class JavaTasks {
                     }
 
             if (left <= right) {
-//                if (elements[left] != null && elements[right] != null) {
                     Comparable temp = elements[left];
                     elements[left] = elements[right];
                     elements[right] = temp;
