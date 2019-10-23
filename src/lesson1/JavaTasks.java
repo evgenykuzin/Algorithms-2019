@@ -1,6 +1,8 @@
 package lesson1;
 
 import kotlin.NotImplementedError;
+import org.jetbrains.annotations.NotNull;
+
 import java.io.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -8,6 +10,63 @@ import java.util.*;
 
 @SuppressWarnings("unused")
 public class JavaTasks {
+    private static final Random random = new Random(Calendar.getInstance().getTimeInMillis());
+
+    private static boolean less(Comparable o1, Comparable o2){
+        if (o1 == null && o2 == null) return false;
+        if (o1 == null && o2 != null) return true;
+        if (o1 != null && o2 == null) return false;
+        return  (o1.compareTo(o2) == -1);
+    }
+
+    private static boolean more(Comparable o1, Comparable o2){
+        if (o1 == null && o2 == null) return false;
+        if (o1 == null && o2 != null) return false;
+        if (o1 != null && o2 == null) return true;
+        return  (o1.compareTo(o2) == 1);
+    }
+
+    private static int partition(Comparable[] elements, int min, int max) {
+        Comparable x = elements[min + random.nextInt(max - min + 1)];
+        int left = min;
+        int right = max;
+        while (left <= right) {
+
+                    while (less(elements[left], x)) {
+                        left++;
+                    }
+
+                    while (more(elements[right], x)) {
+                        right--;
+
+                    }
+
+            if (left <= right) {
+//                if (elements[left] != null && elements[right] != null) {
+                    Comparable temp = elements[left];
+                    elements[left] = elements[right];
+                    elements[right] = temp;
+                    left++;
+                    right--;
+
+            }
+        }
+
+        return right;
+    }
+
+    private static void quickSort(Comparable[] elements, int min, int max) {
+        if (min < max) {
+            int border = partition(elements, min, max);
+            quickSort(elements, min, border);
+            quickSort(elements, border + 1, max);
+        }
+    }
+
+    public static void quickSort(Comparable[] elements) {
+        quickSort(elements, 0, elements.length - 1);
+    }
+
 
     /**
      * Сортировка времён
@@ -43,15 +102,11 @@ public class JavaTasks {
     //quickSort() - O(n*log(n));
     //чтение + запись = O(2n);
     //в итоге: O(2n + n*log(n))
-    static public void sortTimes(String inputName, String outputName) {
-        int[] array = new int[1000];
+    static public void sortTimes(String inputName, String outputName) throws FileNotFoundException {
+        Date[] array = new Date[1000];
         int size = 0;
-        FileReader fileReader = null;
-        try {
-            fileReader = new FileReader(inputName);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        FileReader fileReader;
+        fileReader = new FileReader(inputName);
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String string;
         try {
@@ -59,40 +114,31 @@ public class JavaTasks {
             do {
                 string = bufferedReader.readLine();
                 if (string != null) {
-                    SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
+                    Date time;
                     try {
-                        sdf.parse(string);
+                        SimpleDateFormat sdf = new SimpleDateFormat("hh:mm:ss a");
+                        time = sdf.parse(string);
                     } catch (ParseException pe) {
                         throw new IllegalArgumentException("wrong format of time!");
                     }
-                    String[] timeArray = string.
-                            replaceAll(" AM", "").
-                            replaceAll(" PM", "").
-                            split(":");
-                    if (Integer.parseInt(timeArray[0]) != 12 && isPM(string)) {
-                        timeArray[0] = Integer.parseInt(timeArray[0]) + 12 + "";
+                    if (time != null) {
+                        array[size] = time;
+                        size++;
                     }
-                    if (Integer.parseInt(timeArray[0]) == 12 && isAM(string)) {
-                        timeArray[0] = "0";
-                    }
-                    array[indx] = Integer.parseInt(timeArray[0]) * 3600 +
-                            Integer.parseInt(timeArray[1]) * 60 +
-                            Integer.parseInt(timeArray[2]);
-                    size++;
                 }
-                indx++;
             } while (string != null);
         } catch (IOException e) {
             e.printStackTrace();
         }
         if (size == 0) throw new IllegalArgumentException("empty file!");
-        array = Arrays.copyOf(array, size);
-        Sorts.quickSort(array);
+        quickSort(array);
         try {
             FileWriter fileWriter = new FileWriter(outputName);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
             for (int i = array.length - size; i < array.length; i++) {
-                bufferedWriter.write(getFormatTime(array[i]) + "\n");
+                if (array[i] != null) {
+                    bufferedWriter.write(getFormatTime(array[i])+"\n");
+                }
             }
             bufferedWriter.close();
         } catch (IOException e) {
@@ -101,11 +147,11 @@ public class JavaTasks {
 
     }
 
-    private static String getFormatTime(int seconds) {
+    private static String getFormatTime(Date time) {
         String flag = "AM";
-        int h = seconds / 3600;
-        int m = seconds % 3600 / 60;
-        int s = seconds % 60;
+        int h = time.getHours();
+        int m = time.getMinutes();
+        int s = time.getSeconds();
         if (h >= 12 && h != 24) {
             h -= 12;
             flag = "PM";
@@ -187,11 +233,12 @@ public class JavaTasks {
      * 121.3
      */
     //Асимтотическая сложность :
-    //heapSort() - O(n*log(n));
+    //quickSort() - O(n*log(n));
     //чтение + запись = O(2n);
     //в итоге: O(2n + n*log(n))
     static public void sortTemperatures(String inputName, String outputName) {
-        int[] array = new int[10000000];
+        ArrayList<Double> arrayList = new ArrayList<>();
+        Double[] array;
         FileReader fileReader = null;
         try {
             fileReader = new FileReader(inputName);
@@ -200,31 +247,23 @@ public class JavaTasks {
         }
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String string;
-        int size = 0;
         try {
-            int indx = 0;
             do {
                 string = bufferedReader.readLine();
                 if (string != null) {
-                    array[indx] = Integer.valueOf(
-                            String.valueOf(
-                                    Double.parseDouble(
-                                            string) * 10).replace(".0", ""));
-                    size++;
+                    arrayList.add(Double.valueOf(string));
                 }
-                indx++;
             } while (string != null);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        array = Arrays.copyOf(array, size);
-        Sorts.heapSort(array);
+        array = arrayList.toArray(new Double[0]);
+        quickSort(array);
         try {
             FileWriter fileWriter = new FileWriter(outputName);
             BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
-            for (int i = 0; i < array.length; i++) {
-                double outLine = Double.parseDouble(array[i] + "") / 10;
-                bufferedWriter.write(outLine + "\n");
+            for (double value : array) {
+                bufferedWriter.write(value + "\n");
             }
             bufferedWriter.close();
         } catch (IOException e) {
@@ -266,11 +305,10 @@ public class JavaTasks {
     //чтение + запись = O(2n);
     //определение частоты числа + перестановка чисел в конец = O(2n);
     //в итоге: O(2n + 2n + maxValue)
-
     static public void sortSequence(String inputName, String outputName) {
-        int maxValue = 100000000;
-        int[] array = new int[10000000];
-        int size = 0;
+        int maxValue = Integer.MAX_VALUE / 20;
+        Integer[] array;
+        ArrayList<Integer> arrayList = new ArrayList<>();
         FileReader fileReader = null;
         try {
             fileReader = new FileReader(inputName);
@@ -280,31 +318,24 @@ public class JavaTasks {
         BufferedReader bufferedReader = new BufferedReader(fileReader);
         String string;
         try {
-            int indx = 0;
             do {
                 string = bufferedReader.readLine();
                 if (string != null) {
-                    array[indx] = Integer.parseInt(string);
-                    size++;
+                    arrayList.add(Integer.valueOf(string));
                 }
-                indx++;
             } while (string != null);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        array = Arrays.copyOf(array, size);
+        array = arrayList.toArray(new Integer[0]);
         int[] count = new int[maxValue];
         maxValue = 0;
         for (int value : array) {
-            if (value<count.length) {
-                if (value > maxValue) maxValue = value;
-                count[value]++;
-            }
+            count[value]++;
+            if (value > maxValue) maxValue = value;
         }
-        count = Arrays.copyOf(count, maxValue);
         int maxCountValue = maxCountIndex(count);
         int j = 0;
-        boolean trigger = true;
         for (int i = 0; i < array.length; i++) {
             if (array[i] != maxCountValue) {
                 if (j < i) {
@@ -318,7 +349,7 @@ public class JavaTasks {
         writeToFile(outputName, array);
     }
 
-    private static void writeToFile(String fileName, int[] arr) {
+    private static void writeToFile(String fileName, Integer[] arr) {
         try {
             File file = new File(fileName);
             FileWriter fileWriter = new FileWriter(file);
@@ -336,6 +367,7 @@ public class JavaTasks {
             e.printStackTrace();
         }
     }
+
     private static int maxCountIndex(int[] count) {
         int maxValue = 0;
         int indx = 0;

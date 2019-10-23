@@ -35,7 +35,6 @@ public class JavaAlgorithms {
      * <p>
      * В случае обнаружения неверного формата файла бросить любое исключение.
      */
-    //НЕ РАБОТАЕТ
     static public Pair<Integer, Integer> optimizeBuyAndSell(String inputName) {
         throw new NotImplementedError();
     }
@@ -185,7 +184,6 @@ public class JavaAlgorithms {
      * В файле буквы разделены пробелами, строки -- переносами строк.
      * Остальные символы ни в файле, ни в словах не допускаются.
      */
-    //НЕ РАБОТАЕТ
     static public Set<String> baldaSearcher(String inputName, Set<String> words) {
         String[][] matrix = new String[1000][1000];
         FileReader fileReader = null;
@@ -307,7 +305,5 @@ public class JavaAlgorithms {
             lockPath = new ArrayList<>();
             return true;
         }
-        //System.out.println("return false2");
-        //return false;
     }
 }
