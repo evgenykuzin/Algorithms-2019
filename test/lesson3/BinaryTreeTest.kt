@@ -51,6 +51,8 @@ class BinaryTreeTest {
 
     private fun <T : Comparable<T>> createKotlinTree(): CheckableSortedSet<T> = KtBinaryTree()
 
+
+
     private fun testRemove(create: () -> CheckableSortedSet<Int>) {
         val random = Random()
         for (iteration in 1..100) {

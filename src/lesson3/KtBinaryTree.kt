@@ -84,13 +84,13 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
     }
 
     inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
+       private var current : Node<T>? = root;
         /**
          * Проверка наличия следующего элемента
          * Средняя
          */
         override fun hasNext(): Boolean {
-            // TODO
-            throw NotImplementedError()
+            return contains(current!!.left!!.value) || contains(current!!.right!!.value)
         }
 
         /**
@@ -98,8 +98,8 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Средняя
          */
         override fun next(): T {
-            // TODO
-            throw NotImplementedError()
+           if (contains(current!!.left!!.value)) return current!!.left!!.value
+            return current!!.right!!.value
         }
 
         /**
@@ -107,8 +107,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Сложная
          */
         override fun remove() {
-            // TODO
-            throw NotImplementedError()
+
         }
     }
 
