@@ -64,7 +64,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      */
     override fun remove(element: T): Boolean {
         //TODO()
-        throw NotImplementedError();
+        throw NotImplementedError()
     }
 
     override operator fun contains(element: T): Boolean {
@@ -85,13 +85,13 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
     }
 
     inner class BinaryTreeIterator internal constructor() : MutableIterator<T> {
-       private var current : Node<T>? = root;
+
         /**
          * Проверка наличия следующего элемента
          * Средняя
          */
         override fun hasNext(): Boolean {
-            return contains(current!!.left!!.value) || contains(current!!.right!!.value)
+            TODO()
         }
 
         /**
@@ -99,8 +99,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Средняя
          */
         override fun next(): T {
-           if (contains(current!!.left!!.value)) return current!!.left!!.value
-            return current!!.right!!.value
+            TODO()
         }
 
         /**
@@ -108,7 +107,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
          * Сложная
          */
         override fun remove() {
-
+            TODO()
         }
     }
 
@@ -129,7 +128,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Сложная
      */
     override fun headSet(toElement: T): SortedSet<T> {
-        TODO()
+       TODO()
     }
 
     /**
@@ -137,7 +136,7 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Сложная
      */
     override fun tailSet(fromElement: T): SortedSet<T> {
-        TODO()
+       TODO()
     }
 
     override fun first(): T {

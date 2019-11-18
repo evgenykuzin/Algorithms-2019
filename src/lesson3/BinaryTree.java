@@ -124,7 +124,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         Stack<Node<T>> nodeStack;
 
         private BinaryTreeIterator() {
-            current = null;
             nodeStack = new Stack<>();
             current = root;
         }
@@ -161,10 +160,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          */
         @Override
         public void remove() {
-//           T v = next();
-//           Node<T> node = find(v);
-//           node = new Node<>(null);
-//           //node = null;
         }
     }
 
@@ -193,16 +188,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        SortedSet<T> tree = new BinaryTree<>();
-        tree.add(fromElement);
-        BinaryTreeIterator it = (BinaryTreeIterator) iterator();
-        while (it.hasNext()) {
-            T next = it.next();
-            if (firstMoreSecond(next, fromElement) && firstLessSecond(next, toElement)) {
-                tree.add(next);
-            }
-            if (nodesEquals(next, toElement)) break;
-        }
         return new BinaryTreeWithRange(this, new Range(fromElement, toElement));
     }
 
@@ -213,14 +198,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        BinaryTreeIterator it = (BinaryTreeIterator) iterator();
-        SortedSet<T> tree = new BinaryTree();
-        while (it.hasNext()) {
-            T next = it.next();
-            if (firstLessSecond(next, toElement)) {
-                tree.add(next);
-            } else break;
-        }
         return new BinaryTreeWithRange(this, new Range(null, toElement));
     }
 
@@ -231,16 +208,6 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        SortedSet<T> tree = new BinaryTree<T>();
-        tree.add(fromElement);
-        BinaryTreeIterator it = (BinaryTreeIterator) iterator();
-        while (it.hasNext()) {
-            T next = it.next();
-            if (firstMoreSecond(next, fromElement)) {
-                tree.add(next);
-            }
-        }
-
         return new BinaryTreeWithRange(this, new Range(fromElement, null));
     }
 
