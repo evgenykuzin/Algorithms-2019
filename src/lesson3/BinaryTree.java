@@ -46,6 +46,12 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         return true;
     }
 
+    public void addAll(BinaryTree<T> tree) {
+        for (T t : tree) {
+            add(t);
+        }
+    }
+
     public boolean checkInvariant() {
         return root == null || checkInvariant(root);
     }
@@ -72,11 +78,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
      */
     @Override
     public boolean remove(Object o) {
-        if (contains(o)) {
-            Node<T> node = find((T) o);
-            node = null;
-            return true;
-        } else return false;
+        throw new NotImplementedError();
     }
 
     @Override
@@ -105,12 +107,28 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         }
     }
 
+    private boolean nodesEquals(T first, T second) {
+        return first.compareTo(second) == 0;
+    }
+
+    private boolean firstLessSecond(T first, T second) {
+        return first.compareTo(second) < 0;
+    }
+
+    private boolean firstMoreSecond(T first, T second) {
+        return first.compareTo(second) > 0;
+    }
+
     public class BinaryTreeIterator implements Iterator<T> {
         Node<T> current;
+        Stack<Node<T>> nodeStack;
 
         private BinaryTreeIterator() {
+            current = null;
+            nodeStack = new Stack<>();
             current = root;
         }
+
 
         /**
          * Проверка наличия следующего элемента
@@ -118,7 +136,7 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          */
         @Override
         public boolean hasNext() {
-            return current.left != null || current.right != null;
+            return (current != null || !nodeStack.isEmpty());
         }
 
         /**
@@ -127,17 +145,13 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          */
         @Override
         public T next() {
-            // TODO
-            //throw new NotImplementedError();
-            Node<T> node = null;
-            Node<T> left = current.left;
-            Node<T> right = current.right;
-            if (left.value != null) {
-                node = left;
-            } else if (right.value != null) {
-                node = right;
+            while (current != null) {
+                nodeStack.push(current);
+                current = current.left;
             }
-            current = node;
+            current = nodeStack.pop();
+            Node<T> node = current;
+            current = current.right;
             return node.value;
         }
 
@@ -147,16 +161,10 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
          */
         @Override
         public void remove() {
-            // TODO
-            //throw new NotImplementedError();
-            Node<T> node = null;
-            Node<T> left = current.left;
-            Node<T> right = current.right;
-            if (left.value != null) {
-                current.left = null;
-            } else if (right.value != null) {
-                current.right = null;
-            }
+//           T v = next();
+//           Node<T> node = find(v);
+//           node = new Node<>(null);
+//           //node = null;
         }
     }
 
@@ -185,8 +193,17 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> subSet(T fromElement, T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        SortedSet<T> tree = new BinaryTree<>();
+        tree.add(fromElement);
+        BinaryTreeIterator it = (BinaryTreeIterator) iterator();
+        while (it.hasNext()) {
+            T next = it.next();
+            if (firstMoreSecond(next, fromElement) && firstLessSecond(next, toElement)) {
+                tree.add(next);
+            }
+            if (nodesEquals(next, toElement)) break;
+        }
+        return new BinaryTreeWithRange(this, new Range(fromElement, toElement));
     }
 
     /**
@@ -196,8 +213,15 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> headSet(T toElement) {
-        // TODO
-        throw new NotImplementedError();
+        BinaryTreeIterator it = (BinaryTreeIterator) iterator();
+        SortedSet<T> tree = new BinaryTree();
+        while (it.hasNext()) {
+            T next = it.next();
+            if (firstLessSecond(next, toElement)) {
+                tree.add(next);
+            } else break;
+        }
+        return new BinaryTreeWithRange(this, new Range(null, toElement));
     }
 
     /**
@@ -207,8 +231,17 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
     @NotNull
     @Override
     public SortedSet<T> tailSet(T fromElement) {
-        // TODO
-        throw new NotImplementedError();
+        SortedSet<T> tree = new BinaryTree<T>();
+        tree.add(fromElement);
+        BinaryTreeIterator it = (BinaryTreeIterator) iterator();
+        while (it.hasNext()) {
+            T next = it.next();
+            if (firstMoreSecond(next, fromElement)) {
+                tree.add(next);
+            }
+        }
+
+        return new BinaryTreeWithRange(this, new Range(fromElement, null));
     }
 
     @Override
@@ -230,4 +263,88 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
         }
         return current.value;
     }
+
+    class Range {
+        T fe;
+        T te;
+
+        Range(T fromElement, T toElement) {
+            fe = fromElement;
+            te = toElement;
+        }
+
+        public BinaryTree<T> valuesInRange() {
+            BinaryTree<T> tree = new BinaryTree<>();
+            BinaryTreeIterator it = (BinaryTreeIterator) iterator();
+            if (fe != null && te != null) {
+                tree.add(fe);
+                while (it.hasNext()) {
+                    T next = it.next();
+                    if (firstMoreSecond(next, fe) && firstLessSecond(next, te)) {
+                        tree.add(next);
+                    }
+                    if (nodesEquals(next, te)) break;
+                }
+            } else if (te != null) {
+                while (it.hasNext()) {
+                    T next = it.next();
+                    if (firstLessSecond(next, te)) {
+                        tree.add(next);
+                    } else break;
+                }
+            } else {
+                tree.add(fe);
+                while (it.hasNext()) {
+                    T next = it.next();
+                    if (firstMoreSecond(next, fe)) {
+                        tree.add(next);
+                    }
+                }
+            }
+            return tree;
+        }
+    }
+
+    private class BinaryTreeWithRange extends BinaryTree<T> {
+        private BinaryTree binaryTree;
+        private Range range;
+        int size;
+
+        BinaryTreeWithRange(BinaryTree binaryTree, Range range) {
+            this.binaryTree = binaryTree;
+            this.range = range;
+            size = 0;
+        }
+
+        @Override
+        public boolean add(T t) {
+            if (!inRange(t)) throw new IllegalArgumentException();
+            return binaryTree.add(t);
+        }
+
+        @Override
+        public boolean contains(Object o) {
+            if (!inRange((T) o)) return false;
+            return binaryTree.contains(o);
+        }
+
+        private boolean inRange(T t) {
+            if (range.fe != null && range.te != null) {
+                return range.fe.compareTo(t) <= 0 && range.te.compareTo(t) > 0;
+            } else if (range.fe == null && range.te != null) {
+                return range.te.compareTo(t) >= 0;
+            } else if (range.fe != null) {
+                return range.fe.compareTo(t) <= 0;
+            }
+            return true;
+        }
+
+        @Override
+        public int size() {
+            size = range.valuesInRange().size;
+            return size;
+        }
+
+    }
+
 }

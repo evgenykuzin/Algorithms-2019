@@ -1,7 +1,9 @@
 package lesson5;
 
 import kotlin.NotImplementedError;
+import lesson5.impl.GraphBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -34,7 +36,53 @@ public class JavaGraphTasks {
      * связного графа ровно по одному разу
      */
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        throw new NotImplementedError();
+        System.out.println("start");
+       List<Graph.Edge> eulerLoop = new ArrayList<>();
+        Graph.Vertex first = null;
+        Graph.Edge lastEd = null;
+        int n = 0;
+        int edgeCount = graph.getEdges().size();
+        while (n < edgeCount) {
+            for (Graph.Edge edge : graph.getEdges()) {
+                if (first == null) {
+                    first = edge.getBegin();
+                }
+                System.out.println(edge);
+                if (!eulerLoop.contains(edge) && (consistent(edge, lastEd) || lastEd == null)) {
+                    System.out.println("added -> "+edge);
+                    lastEd = edge;
+                    eulerLoop.add(edge);
+
+                }
+            }
+            n++;
+        }
+       if (lastEd != null) {
+           if (lastEd.getEnd().equals(first)) return eulerLoop;
+       }
+       return new ArrayList<>();
+    }
+
+    private static boolean consistent(Graph.Edge e1, Graph.Edge e2){
+        if (e1 == null || e2 == null) return false;
+        return e1.getBegin().equals(e2.getEnd()) ||
+                e1.getEnd().equals(e2.getBegin()) ; //||
+//                (!e1.equals(e2) &&
+//                        (e1.getEnd().equals(e2.getEnd()) ||
+//                        e1.getBegin().equals(e2.getBegin())));
+    }
+
+    public static void main(String[] args) {
+        GraphBuilder gb = new GraphBuilder();
+        gb.addConnection(new GraphBuilder.VertexImpl("A"), new GraphBuilder.VertexImpl("B"), 1);
+        gb.addConnection(new GraphBuilder.VertexImpl("B"), new GraphBuilder.VertexImpl("C"), 1);
+        gb.addConnection(new GraphBuilder.VertexImpl("C"), new GraphBuilder.VertexImpl("D"), 1);
+        gb.addConnection(new GraphBuilder.VertexImpl("D"), new GraphBuilder.VertexImpl("A"), 1);
+        gb.addConnection(new GraphBuilder.VertexImpl("A"), new GraphBuilder.VertexImpl("F"), 1);
+        gb.addConnection(new GraphBuilder.VertexImpl("E"), new GraphBuilder.VertexImpl("R"), 1);
+
+        Graph graph = gb.build();
+        System.out.println(findEulerLoop(graph));
     }
 
     /**

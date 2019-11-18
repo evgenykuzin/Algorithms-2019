@@ -36,6 +36,7 @@ fun sortTimes(inputName: String, outputName: String) {
     TODO()
 }
 
+
 /**
  * Сортировка адресов
  *
@@ -100,6 +101,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
     TODO()
 }
 
+
 /**
  * Сортировка последовательности
  *
@@ -132,6 +134,7 @@ fun sortTemperatures(inputName: String, outputName: String) {
 fun sortSequence(inputName: String, outputName: String) {
     TODO()
 }
+
 
 /**
  * Соединить два отсортированных массива в один

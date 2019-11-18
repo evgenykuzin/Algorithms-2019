@@ -63,7 +63,8 @@ class KtBinaryTree<T : Comparable<T>> : AbstractMutableSet<T>(), CheckableSorted
      * Средняя
      */
     override fun remove(element: T): Boolean {
-        TODO()
+        //TODO()
+        throw NotImplementedError();
     }
 
     override operator fun contains(element: T): Boolean {
