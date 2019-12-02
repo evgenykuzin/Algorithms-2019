@@ -142,40 +142,6 @@ class BinaryTreeTest {
         testIterator { createJavaTree() }
     }
 
-    @Test
-    fun testNext() {
-        val random = Random()
-        for (iteration in 1..100) {
-            val list = mutableListOf<Int>()
-            for (i in 1..20) {
-                list.add(random.nextInt(100))
-            }
-            val treeSet = TreeSet<Int>()
-            val binarySet = createJavaTree<Int>()
-            assertFalse(binarySet.iterator().hasNext(), "Iterator of empty set should not have next element")
-            for (element in list) {
-                treeSet += element
-                binarySet += element
-            }
-            val treeIt = treeSet.iterator()
-            val binaryIt = binarySet.iterator()
-            println("Traversing $list")
-            while (treeIt.hasNext()) {
-                assertEquals(treeIt.next(), binaryIt.next(), "Incorrect iterator state while iterating $treeSet")
-            }
-            val iterator1 = binarySet.iterator()
-            val iterator2 = binarySet.iterator()
-            println("Consistency check for hasNext $list")
-            // hasNext call should not affect iterator position
-            while (iterator1.hasNext()) {
-                assertEquals(
-                    iterator2.next(), iterator1.next(),
-                    "Call of iterator.hasNext() changes its state while iterating $treeSet"
-                )
-            }
-        }
-    }
-
     private fun testIteratorRemove(create: () -> CheckableSortedSet<Int>) {
         val random = Random()
         for (iteration in 1..100) {

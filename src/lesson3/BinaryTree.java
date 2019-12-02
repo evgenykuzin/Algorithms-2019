@@ -240,35 +240,28 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
             te = toElement;
         }
 
-        public BinaryTree<T> valuesInRange() {
-            BinaryTree<T> tree = new BinaryTree<>();
-            BinaryTreeIterator it = (BinaryTreeIterator) iterator();
+        private boolean inRange(T t) {
             if (fe != null && te != null) {
-                tree.add(fe);
-                while (it.hasNext()) {
-                    T next = it.next();
-                    if (firstMoreSecond(next, fe) && firstLessSecond(next, te)) {
-                        tree.add(next);
-                    }
-                    if (nodesEquals(next, te)) break;
-                }
-            } else if (te != null) {
-                while (it.hasNext()) {
-                    T next = it.next();
-                    if (firstLessSecond(next, te)) {
-                        tree.add(next);
-                    } else break;
-                }
-            } else {
-                tree.add(fe);
-                while (it.hasNext()) {
-                    T next = it.next();
-                    if (firstMoreSecond(next, fe)) {
-                        tree.add(next);
-                    }
-                }
+                return fe.compareTo(t) <= 0 && te.compareTo(t) > 0;
+            } else if (fe == null && te != null) {
+                return te.compareTo(t) >= 0;
+            } else if (fe != null) {
+                return fe.compareTo(t) <= 0;
             }
-            return tree;
+            return true;
+        }
+
+        private int valuesCount() {
+            int size = 0;
+            BinaryTreeIterator it = (BinaryTreeIterator) iterator();
+            T next = it.next();
+            while (next != null) {
+                if (inRange(next)) {
+                    size++;
+                }
+                next = it.next();
+            }
+            return size;
         }
     }
 
@@ -285,31 +278,79 @@ public class BinaryTree<T extends Comparable<T>> extends AbstractSet<T> implemen
 
         @Override
         public boolean add(T t) {
-            if (!inRange(t)) throw new IllegalArgumentException();
+            if (!range.inRange(t)) throw new IllegalArgumentException();
             return binaryTree.add(t);
         }
 
         @Override
         public boolean contains(Object o) {
-            if (!inRange((T) o)) return false;
+            if (!range.inRange((T) o)) return false;
             return binaryTree.contains(o);
-        }
-
-        private boolean inRange(T t) {
-            if (range.fe != null && range.te != null) {
-                return range.fe.compareTo(t) <= 0 && range.te.compareTo(t) > 0;
-            } else if (range.fe == null && range.te != null) {
-                return range.te.compareTo(t) >= 0;
-            } else if (range.fe != null) {
-                return range.fe.compareTo(t) <= 0;
-            }
-            return true;
         }
 
         @Override
         public int size() {
-            size = range.valuesInRange().size;
+            size = range.valuesCount();
             return size;
+        }
+
+        @Override
+        public boolean remove(Object o) {
+            if (!range.inRange((T) o)) return false;
+            return binaryTree.remove((T) o);
+        }
+
+        class BinaryTreeIteratorWithRange extends BinaryTreeIterator {
+
+            BinaryTreeIteratorWithRange() {
+                super();
+            }
+
+            @Override
+            public boolean hasNext() {
+                return current != null || !nodeStack.isEmpty() && range.inRange(current.value);
+            }
+
+            @Override
+            public T next() {
+                while (current != null) {
+                    nodeStack.push(current);
+                    current = current.left;
+                }
+                current = nodeStack.pop();
+                Node<T> node = current;
+                current = current.right;
+                return node.value;
+            }
+
+        }
+
+        @NotNull
+        @Override
+        public BinaryTreeIterator iterator() {
+            return new BinaryTreeIteratorWithRange();
+        }
+
+        @Override
+        public T first() {
+            if (root == null) throw new NoSuchElementException();
+            Node<T> current = root;
+            while (current.left != null) {
+                if (!range.inRange(current.left.value)) break;
+                current = current.left;
+            }
+            return current.value;
+        }
+
+        @Override
+        public T last() {
+            if (root == null) throw new NoSuchElementException();
+            Node<T> current = root;
+            while (current.right != null) {
+                if (!range.inRange(current.right.value)) break;
+                current = current.right;
+            }
+            return current.value;
         }
 
     }

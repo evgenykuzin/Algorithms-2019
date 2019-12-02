@@ -2,6 +2,11 @@
 
 package lesson1
 
+import java.io.*
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
+
 /**
  * Сортировка времён
  *
@@ -32,8 +37,112 @@ package lesson1
  *
  * В случае обнаружения неверного формата файла бросить любое исключение.
  */
+private fun less(o1: Date?, o2: Date?): Boolean {
+    if (o1 == null && o2 == null) return false
+    if (o1 == null) return true
+    return if (o2 == null) false else o1.compareTo(o2) < 0
+}
+
+private fun more(o1: Date?, o2: Date?): Boolean {
+    if (o1 == null && o2 == null) return false
+    if (o1 == null) return false
+    return if (o2 == null) true else o1.compareTo(o2) > 0
+}
+
+private val random = Random(Calendar.getInstance().timeInMillis)
+
+private fun partition(elements: Array<Date?>, min: Int, max: Int): Int {
+    val x = elements[min + random.nextInt(max - min + 1)]
+    var left = min
+    var right = max
+    while (left <= right) {
+        while (less(elements[left], x)) {
+            left++
+        }
+        while (more(elements[right], x)) {
+            right--
+        }
+        if (left <= right) {
+            val temp = elements[left]
+            elements[left] = elements[right]
+            elements[right] = temp
+            left++
+            right--
+        }
+    }
+    return right
+}
+
+private fun quickSort(elements: Array<Date?>, min: Int, max: Int) {
+    if (min < max) {
+        val border = partition(elements, min, max)
+        quickSort(elements, min, border)
+        quickSort(elements, border + 1, max)
+    }
+}
+
+fun quickSort(elements: Array<Date?>) {
+    quickSort(elements, 0, elements.size - 1)
+}
+
+private fun getTimeToString(time: Date): String {
+    var meridiem = "AM"
+    var h = time.hours
+    val m = time.minutes
+    val s = time.seconds
+    if (h >= 12 && h != 24) {
+        h -= 12
+        meridiem = "PM"
+    }
+    if (h == 0) h = 12
+    val ss = if (s < 10) "0$s" else "" + s
+    val sm = if (m < 10) "0$m" else "" + m
+    val sh = if (h < 10) "0$h" else "" + h
+    return "$sh:$sm:$ss $meridiem"
+}
+
 fun sortTimes(inputName: String, outputName: String) {
-    TODO()
+    val array: Array<Date?> = arrayOfNulls(1000)
+    var size = 0
+    val fileReader = FileReader(inputName)
+    val bufferedReader = BufferedReader(fileReader)
+    var string: String?
+    try {
+        do {
+            string = bufferedReader.readLine()
+            if (string != null) {
+                val time: Date?
+                try {
+                    val sdf = SimpleDateFormat("hh:mm:ss a")
+                    time = sdf.parse(string)
+                } catch (pe: ParseException) {
+                    throw IllegalArgumentException("wrong time")
+                }
+
+                if (time != null) {
+                    array[size] = time
+                    size++
+                }
+            }
+        } while (string != null)
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    require(size != 0) { "file is empty" }
+    quickSort(array)
+    try {
+        val fileWriter = FileWriter(outputName)
+        val bufferedWriter = BufferedWriter(fileWriter)
+        for (i in array.size - size until array.size) {
+            if (array[i] != null) {
+                bufferedWriter.write(array[i]?.let { getTimeToString(it) } + "\n")
+            }
+        }
+        bufferedWriter.close()
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
 }
 
 
