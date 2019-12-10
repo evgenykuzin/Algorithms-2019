@@ -176,7 +176,8 @@ public class JavaDynamicTasks {
             x = 0;
         }
 
-        void setCells(){
+        void setCells() {
+            cells = new int[height][width];
             for (int i = 0; i < height; i++) {
                 for (int j = 0; j < width; j++) {
                     cells[i][j] = lists.get(i).get(j);
@@ -185,36 +186,15 @@ public class JavaDynamicTasks {
         }
 
         int get(int y, int x) {
-             return cells[y][x];
-        }
-
-        void goToStart(){
-            y = 0;
-            x = 0;
-        }
-
-        void up(int value) {
-            cells[y][x - 1] = value;
-            x++;
-        }
-
-        void left(int value) {
-            cells[y-1][x] = value;
-            y++;
-        }
-
-        void current(int value) {
-            cells[y][x] = value;
-            y++;
+            return cells[y][x];
         }
 
         void set(int y, int x, int value) {
             cells[y][x] = value;
         }
 
-        int getLast() {
-            return lists.get(height - 1).get(width - 1);
-            //return cells[height - 1][width - 1];
+        int getResult() {
+            return cells[height - 1][width - 1];
         }
 
         @Override
@@ -260,7 +240,7 @@ public class JavaDynamicTasks {
         return field;
     }
 
-    static HashMap<int[][], int[][]> matrixStorage = new HashMap<>();
+    private static HashMap<int[][], int[][]> matrixStorage = new HashMap<>();
 
     public static int shortestPathOnField(String inputName) {
         if (storage.containsKey(inputName)) return Integer.valueOf(storage.get(inputName));
@@ -270,57 +250,33 @@ public class JavaDynamicTasks {
         int width = inputField.width;
         if (matrixStorage.containsKey(inputField.cells))
             return matrixStorage.get(inputField.cells)[height - 1][width - 1];
-        int[][] field = new int[height][width];
+        inputField.setCells();
         resultField.set(0, 0, inputField.get(0, 0));
-        field[0][0] = inputField.get(0, 0);
         for (int i = 1; i < height; i++) {
-            //int v1 = resultField.get(i - 1, 0);
-            int v1 = field[i - 1][0];
+            int v1 = resultField.get(i-1, 0);
             int v2 = inputField.get(i, 0);
             resultField.set(i, 0, v1 + v2);
-            field[i][0] = v1 + v2;
         }
         for (int i = 1; i < width; i++) {
-            //int v1 = resultField.get(0, i - 1);
-            int v1 = field[0][i - 1];
+            int v1 = resultField.get(0, i-1);
             int v2 = inputField.get(0, i);
             resultField.set(0, i, v1 + v2);
-            field[0][i] = v1 + v2;
         }
         for (int i = 1; i < height; i++) {
             for (int j = 1; j < width; j++) {
-                //int v1 = resultField.get(i - 1, j);
-                //int v2 = resultField.get(i, j - 1);
-                //int v3 = resultField.get(i - 1, j - 1) + inputField.get(i, j);
-                int v1 = field[i - 1][j] + inputField.get(i, j);
-                int v2 = field[i][j - 1] + inputField.get(i, j);
-                int v3 = field[i - 1][j - 1] + inputField.get(i, j);
+                int v1 = resultField.get(i-1, j) + inputField.get(i, j);
+                int v2 = resultField.get(i, j-1) + inputField.get(i, j);
+                int v3 = resultField.get(i-1, j-1) + inputField.get(i, j);
                 int value = Math.min(Math.min(v1, v2), v3);
-                value = min(v1, v2, v3);
                 resultField.set(i, j, value);
-                field[i][j] = value;
             }
         }
-        int result = field[height - 1][width - 1];
+        int result = resultField.getResult();
         storage.put(inputName, String.valueOf(result));
-        matrixStorage.put(inputField.cells, field);
+        matrixStorage.put(inputField.cells, resultField.cells);
         return result;
-        //return resultField.getLast();
     }
 
-    private static int min(int v1, int v2, int v3) {
-        int min = v1 + v2 + v3;
-        if (v1 >= v2 && v3 >= v2) {
-            min = v2;
-        }
-        if (v2 >= v1 && v3 >= v1) {
-            min = v1;
-        }
-        if (v1 >= v3 && v2 >= v3) {
-            min = v3;
-        }
-        return min;
-    }
 
     // Задачу "Максимальное независимое множество вершин в графе без циклов"
     // смотрите в уроке 5
