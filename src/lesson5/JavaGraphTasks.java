@@ -1,7 +1,5 @@
 package lesson5;
 
-import kotlin.NotImplementedError;
-
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -88,7 +86,8 @@ public class JavaGraphTasks {
      * J ------------ K
      */
     public static Graph minimumSpanningTree(Graph graph) {
-        throw new NotImplementedError();
+        // throw new NotImplementedError();
+        return null;
     }
 
     /**
@@ -118,7 +117,8 @@ public class JavaGraphTasks {
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
-        throw new NotImplementedError();
+        // throw new NotImplementedError();
+        return null;
     }
 
     /**
@@ -142,6 +142,7 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     public static Path longestSimplePath(Graph graph) {
-        throw new NotImplementedError();
+        // throw new NotImplementedError();
+        return null;
     }
 }
