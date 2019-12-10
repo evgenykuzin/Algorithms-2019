@@ -31,30 +31,59 @@ public class JavaGraphTasks {
      * связного графа ровно по одному разу
      */
 
-    private static ArrayList<Graph.Edge> list;
+    static class Loop extends ArrayList<Graph.Edge> {
+        private Graph.Edge start;
+        private Graph.Edge end;
+        private int requiredSize;
 
-    private static boolean findLoop(Graph.Vertex vertex, Graph graph) {
-        if (list.size() == graph.getEdges().size()) return true;
+        Loop(int requiredSize) {
+            this.requiredSize = requiredSize;
+        }
+
+        @Override
+        public boolean add(Graph.Edge o) {
+            if (start == null) {
+                start = o;
+            }
+            end = o;
+            if (!contains(o)) return super.add(o);
+            return false;
+        }
+
+        boolean isEulerLoop() {
+            return requiredSize == size() && isConnected();
+        }
+
+        private boolean isConnected() {
+            return start.getEnd().equals(end.getEnd()) ||
+                    start.getBegin().equals(end.getBegin()) ||
+                    start.getEnd().equals(end.getBegin()) ||
+                    start.getBegin().equals(end.getEnd());
+        }
+    }
+
+    private static boolean findLoop(Graph.Vertex vertex, Graph graph, Loop loop) {
+        if (loop.isEulerLoop()) return true;
         Set<Graph.Vertex> neighbors = graph.getNeighbors(vertex);
         for (Graph.Vertex neighbor : neighbors) {
             Graph.Edge connection = graph.getConnection(vertex, neighbor);
-            if (list.contains(connection) && connection != null) continue;
-            list.add(connection);
-            if (findLoop(neighbor, graph)) return true;
+            if (loop.contains(connection) && connection != null) continue;
+            loop.add(connection);
+            if (findLoop(neighbor, graph, loop)) return true;
         }
-        if (!list.isEmpty()) list.remove(list.size() - 1);
+        if (!loop.isEmpty()) loop.remove(loop.size() - 1);
         return false;
     }
 
     public static List<Graph.Edge> findEulerLoop(Graph graph) {
-        list = new ArrayList<>();
         Set<Graph.Vertex> vertices = graph.getVertices();
         Graph.Vertex first;
-        if (vertices.isEmpty()) return list;
+        if (vertices.isEmpty()) return new ArrayList<>();
         first = (Graph.Vertex) vertices.toArray()[0];
-        findLoop(first, graph);
-        if (list.size() < 3) return new ArrayList<>();
-        return list;
+        Loop loop = new Loop(graph.getEdges().size());
+        findLoop(first, graph, loop);
+        if (loop.size() < 3) return new ArrayList<>();
+        return loop;
     }
 
     /**
