@@ -133,6 +133,10 @@ public class JavaDynamicTasks {
      * Необходимо найти маршрут с минимальным весом и вернуть этот минимальный вес.
      * <p>
      * Здесь ответ 2 + 3 + 4 + 1 + 2 = 12
+     *
+     * Трудоемкость = O(h * w)
+     * Ресурсоемкость = O(h * w)
+     *
      */
 
     static class Field {
@@ -140,40 +144,28 @@ public class JavaDynamicTasks {
         int height;
         int[][] cells;
         ArrayList<ArrayList<Integer>> lists;
-        int y;
-        int x;
 
-        public Field() {
-            y = 0;
-            x = 0;
+        Field() {
             cells = new int[10][10];
             lists = new ArrayList<>();
         }
 
-        public Field(int height, int width) {
+        Field(int height, int width) {
             this.width = width;
             this.height = height;
-            y = 0;
-            x = 0;
             cells = new int[height][width];
             lists = new ArrayList<>();
         }
 
         void addLine(String line) {
             String[] digits = line.split(" ");
-            height = y + 1;
+            height++;
             width = digits.length;
             ArrayList<Integer> l = new ArrayList<>();
             for (String d : digits) {
-                //cells[y][x] = Integer.valueOf(d);
                 l.add(Integer.valueOf(d));
-                x++;
             }
             lists.add(l);
-            width = l.size();
-            height = lists.size();
-            y++;
-            x = 0;
         }
 
         void setCells() {
@@ -203,9 +195,8 @@ public class JavaDynamicTasks {
             for (ArrayList<Integer> line : lists) {
                 boolean n = false;
                 for (int d : line) {
-                    sb.append(String.valueOf(d)).append(" ");
+                    sb.append(d).append(" ");
                     n = true;
-
                 }
                 if (n) sb.append("\n");
             }
@@ -253,20 +244,20 @@ public class JavaDynamicTasks {
         inputField.setCells();
         resultField.set(0, 0, inputField.get(0, 0));
         for (int i = 1; i < height; i++) {
-            int v1 = resultField.get(i-1, 0);
+            int v1 = resultField.get(i - 1, 0);
             int v2 = inputField.get(i, 0);
             resultField.set(i, 0, v1 + v2);
         }
         for (int i = 1; i < width; i++) {
-            int v1 = resultField.get(0, i-1);
+            int v1 = resultField.get(0, i - 1);
             int v2 = inputField.get(0, i);
             resultField.set(0, i, v1 + v2);
         }
         for (int i = 1; i < height; i++) {
             for (int j = 1; j < width; j++) {
-                int v1 = resultField.get(i-1, j) + inputField.get(i, j);
-                int v2 = resultField.get(i, j-1) + inputField.get(i, j);
-                int v3 = resultField.get(i-1, j-1) + inputField.get(i, j);
+                int v1 = resultField.get(i - 1, j) + inputField.get(i, j);
+                int v2 = resultField.get(i, j - 1) + inputField.get(i, j);
+                int v3 = resultField.get(i - 1, j - 1) + inputField.get(i, j);
                 int value = Math.min(Math.min(v1, v2), v3);
                 resultField.set(i, j, value);
             }
