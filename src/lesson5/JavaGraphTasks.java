@@ -1,5 +1,7 @@
 package lesson5;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.*;
 
 @SuppressWarnings("unused")
@@ -29,10 +31,9 @@ public class JavaGraphTasks {
      * <p>
      * Справка: Эйлеров цикл -- это цикл, проходящий через все рёбра
      * связного графа ровно по одному разу
-     *
+     * <p>
      * Трудоемкость = O(E+V)
      * Ресурсоемкость = O(E)
-     *
      */
 
     static class Loop extends ArrayList<Graph.Edge> {
@@ -55,7 +56,7 @@ public class JavaGraphTasks {
         }
 
         boolean isEulerLoop() {
-            return requiredSize == size() && isConnected();
+            return requiredSize == size() && isConnected() && size() >= 3;
         }
 
         private boolean isConnected() {
@@ -86,7 +87,6 @@ public class JavaGraphTasks {
         first = (Graph.Vertex) vertices.toArray()[0];
         Loop loop = new Loop(graph.getEdges().size());
         findLoop(first, graph, loop);
-        if (loop.size() < 3) return new ArrayList<>();
         return loop;
     }
 
@@ -119,8 +119,7 @@ public class JavaGraphTasks {
      * J ------------ K
      */
     public static Graph minimumSpanningTree(Graph graph) {
-        // throw new NotImplementedError();
-        return null;
+         throw new NotImplementedException();
     }
 
     /**
@@ -149,9 +148,9 @@ public class JavaGraphTasks {
      * <p>
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      */
+
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
-        // throw new NotImplementedError();
-        return null;
+        throw new NotImplementedException();
     }
 
     /**
@@ -175,7 +174,6 @@ public class JavaGraphTasks {
      * Ответ: A, E, J, K, D, C, H, G, B, F, I
      */
     public static Path longestSimplePath(Graph graph) {
-        // throw new NotImplementedError();
-        return null;
+         throw new NotImplementedException();
     }
 }

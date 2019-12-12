@@ -16,86 +16,51 @@ public class JavaDynamicTasks {
      * Если общей подпоследовательности нет, вернуть пустую строку.
      * Если есть несколько самых длинных общих подпоследовательностей, вернуть любую из них.
      * При сравнении подстрок, регистр символов *имеет* значение.
+     *
+     *
+     * трудоемкость = O(m * n)
+     * ресурсоемкость = O(m * n)
+     *
+     *
+     *
+     *
      */
+
 
     private static HashMap<String, String> storage = new HashMap<>();
 
-    private static ArrayList<Character> find_(String f, String s, ArrayList<Character> chars) {
-        String first = f;
-        String second = s;
-        if (f.length() > s.length()) {
-            first = s;
-            second = f;
-        }
-        System.out.println("first = " + first);
-        System.out.println("second = " + second);
-        for (Character ch1 : first.toCharArray()) {
-            for (Character ch2 : second.toCharArray()) {
-                if (ch1.equals(ch2)) {
-                    System.out.println("ch = " + ch1);
-                    second = second.substring(second.indexOf(ch2) + 1);
-                    first = first.substring(first.indexOf(ch1) + 1);
-                    System.out.println("first cut = " + first);
-                    System.out.println("second cut = " + second);
-                    chars.add(ch1);
-                    return find_(first, second, chars);
-                }
-            }
-        }
-        System.out.println("result = " + chars);
-        return chars;
-    }
-
-    private static ArrayList<Character> find(String f, String s, ArrayList<Character> chars, ArrayList<ArrayList<Character>> variants) {
-        String first = f;
-        String second = s;
-        System.out.println("first = " + first);
-        System.out.println("second = " + second);
-        for (Character ch1 : first.toCharArray()) {
-            for (Character ch2 : second.toCharArray()) {
-                if (ch1.equals(ch2)) {
-                    System.out.println("ch = " + ch1);
-                    second = second.substring(second.indexOf(ch2) + 1);
-                    first = first.substring(first.indexOf(ch1) + 1);
-                    System.out.println("first cut = " + first);
-                    System.out.println("second cut = " + second);
-                    chars.add(ch1);
-                    ArrayList<Character> variant = new ArrayList<>(chars);
-                    find(first, second, variant, variants);
-                }
-            }
-        }
-        variants.add(chars);
-        System.out.println("result = " + chars);
-        return chars;
-    }
-
-    private static ArrayList<Character> find(String first, String second) {
-        ArrayList<Character> chars = new ArrayList<>();
-        ArrayList<ArrayList<Character>> variants = new ArrayList<>();
-        ArrayList<Character> result = new ArrayList<>();
-        find(first, second, chars, variants);
-        int maxSize = 0;
-        for (ArrayList<Character> variant : variants) {
-            if (variant.size() > maxSize) {
-                result = variant;
-                maxSize = variant.size();
-            }
-        }
-        return result;
-    }
-
     public static String longestCommonSubSequence(String first, String second) {
-        System.out.println("start");
-        ArrayList<Character> sequence1 = find(first, second);
-        ArrayList<Character> sequence2 = find(second, first);
-        ArrayList<Character> sequence;
-        sequence = sequence1.size() > sequence2.size() ? sequence1 : sequence2;
-        StringBuilder result = new StringBuilder();
-        for (Character s : sequence) {
-            result.append(s);
+        int length1 = first.length()+1;
+        int length2 = second.length()+1;
+        StringBuilder sequence = new StringBuilder();
+        int[][] matrix = new int[length1][length2];
+        for (int i = 1; i < length1; i++) {
+            for (int j = 1; j < length2; j++) {
+                char ch1 = first.charAt(i-1);
+                char ch2 = second.charAt(j-1);
+                if (ch1 == ch2) {
+                    matrix[i][j] = matrix[i-1][j-1] + 1;
+                } else {
+                    matrix[i][j] = Math.max(matrix[i-1][j], matrix[i][j-1]);
+                }
+            }
         }
-        return result.toString();
+        length1--;
+        length2--;
+        while (length1 > 0 && length2 > 0) {
+            char ch1 = first.charAt(length1 - 1);
+            char ch2 = second.charAt(length2 - 1);
+            if (ch1 == ch2) {
+                sequence.append(ch1);
+                length1--;
+                length2--;
+            } else if (matrix[length1 - 1][length2] >= matrix[length1][length2 - 1]) {
+                length1--;
+            } else {
+                length2--;
+            }
+        }
+        return sequence.reverse().toString();
     }
 
     /**
