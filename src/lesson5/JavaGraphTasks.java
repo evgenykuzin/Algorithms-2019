@@ -128,8 +128,8 @@ public class JavaGraphTasks {
      * <p>
      * Дан граф без циклов (получатель), например
      * <p>
-     * G -- H -- J
-     * |
+     *      G -- H -- J
+     *      |
      * A -- B -- D
      * |         |
      * C -- F    I
@@ -147,10 +147,37 @@ public class JavaGraphTasks {
      * Если на входе граф с циклами, бросить IllegalArgumentException
      * <p>
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
+     *
+     * трудоемкость = O(v)
+     * ресурсоемкость = O(v^2)
+     *
      */
 
     public static Set<Graph.Vertex> largestIndependentVertexSet(Graph graph) {
-        throw new NotImplementedException();
+        List<Set<Graph.Vertex>> results = new ArrayList<>();
+        Set<Graph.Vertex> vertices = graph.getVertices();
+        for (Graph.Vertex v1 : vertices){
+            Set<Graph.Vertex> result = new HashSet<>();
+            Set<Graph.Vertex> checked = new HashSet<>();
+            for (Graph.Vertex v2 : vertices) {
+                if (!graph.getNeighbors(v1).contains(v2) && !checked.contains(v2)) {
+                    checked.addAll(graph.getNeighbors(v2));
+                    result.add(v2);
+                }
+            }
+            results.add(result);
+        }
+       return getMinOf(results);
+    }
+
+    private static Set<Graph.Vertex> getMinOf(List<Set<Graph.Vertex>> list) {
+        Set<Graph.Vertex> result = new HashSet<>();
+        for (Set<Graph.Vertex> r : list) {
+            if (result.size() < r.size()) {
+                result = r;
+            }
+        }
+        return result;
     }
 
     /**
