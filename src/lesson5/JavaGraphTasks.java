@@ -56,7 +56,7 @@ public class JavaGraphTasks {
         }
 
         boolean isEulerLoop() {
-            return requiredSize == size() && isConnected() && size() >= 3;
+            return requiredSize == size() && isConnected();
         }
 
         private boolean isConnected() {
@@ -87,6 +87,7 @@ public class JavaGraphTasks {
         first = (Graph.Vertex) vertices.toArray()[0];
         Loop loop = new Loop(graph.getEdges().size());
         findLoop(first, graph, loop);
+        if (loop.size() < 3) return new ArrayList<>();
         return loop;
     }
 
@@ -148,8 +149,8 @@ public class JavaGraphTasks {
      * <p>
      * Эта задача может быть зачтена за пятый и шестой урок одновременно
      *
-     * трудоемкость = O(v)
-     * ресурсоемкость = O(v^2)
+     * трудоемкость = O(v^2)
+     * ресурсоемкость = O(v)
      *
      */
 

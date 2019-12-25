@@ -26,9 +26,6 @@ public class JavaDynamicTasks {
      *
      */
 
-
-    private static HashMap<String, String> storage = new HashMap<>();
-
     public static String longestCommonSubSequence(String first, String second) {
         int length1 = first.length()+1;
         int length2 = second.length()+1;
@@ -196,16 +193,12 @@ public class JavaDynamicTasks {
         return field;
     }
 
-    private static HashMap<int[][], int[][]> matrixStorage = new HashMap<>();
 
     public static int shortestPathOnField(String inputName) {
-        if (storage.containsKey(inputName)) return Integer.valueOf(storage.get(inputName));
         Field inputField = loadField(inputName);
         Field resultField = new Field(inputField.height, inputField.width);
         int height = inputField.height;
         int width = inputField.width;
-        if (matrixStorage.containsKey(inputField.cells))
-            return matrixStorage.get(inputField.cells)[height - 1][width - 1];
         inputField.setCells();
         resultField.set(0, 0, inputField.get(0, 0));
         for (int i = 1; i < height; i++) {
@@ -228,8 +221,6 @@ public class JavaDynamicTasks {
             }
         }
         int result = resultField.getResult();
-        storage.put(inputName, String.valueOf(result));
-        matrixStorage.put(inputField.cells, resultField.cells);
         return result;
     }
 

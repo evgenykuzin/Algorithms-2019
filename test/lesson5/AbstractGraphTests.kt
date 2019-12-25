@@ -117,35 +117,20 @@ abstract class AbstractGraphTests {
 
         //полносвязный граф
         val graph4 = GraphBuilder().apply {
-            val a = addVertex("A")
-            val b = addVertex("B")
-            val c = addVertex("C")
-            val d = addVertex("D")
-            val e = addVertex("E")
-            val f = addVertex("F")
-            val g = addVertex("G")
-            addConnection(a, b)
-            addConnection(e, g)
-            addConnection(f, g)
-            addConnection(a, e)
-            addConnection(a, d)
-            addConnection(b, g)
-            addConnection(c, d)
-            addConnection(c, e)
-            addConnection(d, e)
-            addConnection(b, f)
-            addConnection(c, f)
-            addConnection(c, g)
-            addConnection(d, g)
-            addConnection(a, c)
-            addConnection(d, f)
-            addConnection(e, f)
-            addConnection(b, e)
-            addConnection(b, c)
-            addConnection(b, d)
-            addConnection(a, f)
-            addConnection(a, g)
-
+            val set = hashSetOf<Graph.Vertex>()
+            for(i in 1..7) {
+                set.add(addVertex("X$i"))
+                println(set.toString())
+            }
+            for (v1 in set) {
+                for (v2 in set) {
+                    println(v1)
+                    println(v2)
+                    if(v1 != v2) {
+                        addConnection(v1, v2)
+                    }
+                }
+            }
         }.build()
         val loop4 = graph4.findEulerLoop()
         loop4.assert(shouldExist = true, graph = graph4)
